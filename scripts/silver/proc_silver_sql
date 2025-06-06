@@ -3,19 +3,51 @@
 ====================================================================
 Stored Procedure --> silver.load_silver (Bronze to Silver)
 ====================================================================
-Scripts Purpose:
-This script defines the stored procedure silver.load_silver, which is responsible for transforming and loading data into the Silver Layer of a data warehouse. 
+Purpose:
+This stored procedure, silver.load_silver, processes data from the Bronze Layer and loads it into the Silver Layer. 
+It ensures data transformation, cleaning, and formatting before storing it for analytical use.
 
-The process follows ETL (Extract, Transform, Load) principles and includes:
+What This Procedure Does:
 
-- Extracting data from the Bronze Layer (raw data tables).
-- Transforming data for consistency (formatting names, handling missing values, standardizing categories).
-- Loading refined data into Silver tables for structured reporting and analysis.
-- Capturing load durations for performance monitoring.
+- Truncates Silver Layer tables to remove old data before loading fresh records.
+- Extracts data from Bronze tables.
+- Transforms data (removes duplicates, trims spaces, formats categories).
+- Applies business rules (fixes missing values, updates gender, marital status, and product categories).
+- Inserts the cleaned data into Silver tables.
+- Logs execution time to monitor performance.
+
+Warnings:
+⚠️ Data Truncation:
+
+- Truncating deletes all records in Silver tables before inserting new ones.
+- Once truncated, data cannot be recovered unless backups exist.
+
+⚠️ Bulk Inserts Impact:
+
+- Large inserts can lock tables, causing delays for other queries running at the same time.
+- Consider using batch processing or indexing for better performance.
+
+⚠️ Data Transformation Risks:
+
+- Some values are reformatted (e.g., gender changes from M → Male, F → Female).
+- Make sure the business rules align with expected reporting needs.
+
+⚠️ Error Handling:
+
+- Errors are printed, but not stored in a log table.
+- For better debugging, an error tracking table could be added.
+
+⚠️ Naming Consistency:
+
+- Double-check that table and column names match the database structure to avoid execution failures.
+- Use consistent date formats while inserting records.
 
 Parameters:
   None.
   This Stored Procedure does not accpet any parameters and return any values.
+
+Example Use:
+EXEC silver.load_silver
 */
 
 
