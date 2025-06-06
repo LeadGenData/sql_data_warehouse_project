@@ -1,0 +1,47 @@
+
+*/
+--===========================================================================
+--CREATE Database and Schemas
+--===========================================================================
+
+-- ===========================================================================
+-- Script Purpose:
+-- This script manages the creation and recreation of the 'DataWareHouse' database.
+-- 1. Checks if the database exists and drops it if necessary.
+-- 2. Creates a fresh 'DataWareHouse' database.
+-- 3. Defines three schemas: bronze, silver, and gold for structured data processing.
+-- ===========================================================================
+
+USE master;
+
+-- ===========================================================================
+-- WARNING:
+-- - **DATA LOSS:** Dropping a database permanently deletes all its data. Ensure you have backups if needed.
+-- - **NAMING ISSUE:** The script checks for 'DataWareHouse' (with an uppercase 'H'), but the ALTER and DROP statements refer to 'DataWarehouse' (lowercase 'h'). 
+--   This mismatch will likely cause an error if the intended database name is 'DataWareHouse'.
+-- - **ACCESS:** Requires **sysadmin** privileges or database owner rights to execute.
+-- ===========================================================================
+
+-- Drop and recreate the 'DataWareHouse' database
+IF EXISTS (SELECT 1 FROM sys.databases WHERE name='DataWareHouse')
+BEGIN
+    ALTER DATABASE DataWareHouse SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE DataWareHouse;
+END;
+GO
+
+-- Create a new 'DataWareHouse' database
+CREATE DATABASE DataWareHouse;
+GO
+
+-- Switch context to 'DataWareHouse'
+USE DataWareHouse;
+GO
+
+-- Create schemas for structured data processing
+CREATE SCHEMA bronze;
+GO
+CREATE SCHEMA silver;
+GO
+CREATE SCHEMA gold;
+GO
